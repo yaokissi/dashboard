@@ -118,7 +118,7 @@ h1 {
 }
 .slogan {
    padding-top: 150px;
-   padding-left: 40px;
+   padding-left: 50px;
    background: #B7DEED;
 background: linear-gradient(to right, #B7DEED 0%, #71CEEF 25%, #21B4E2 75%, #B7DEED 100%);
 -webkit-background-clip: text;

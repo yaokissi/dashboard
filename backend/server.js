@@ -1,13 +1,20 @@
-import express from 'express'
 
-
+const express = require('express')
 const app = express()
+const cors = require ('cors')
+const connectDb = require('./database/db.js')
+const routeRegister = require ('./routes/registerRouter.js')
 const port = 3000
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+
+connectDb()
+app.use(cors())
+app.use(express.json());
+app.use("/api", routeRegister)
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`listening on port ${port}`)
 })
+
+
+
