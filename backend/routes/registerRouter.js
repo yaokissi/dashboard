@@ -5,21 +5,21 @@ const bcrypt = require ('bcrypt')
 const router = express.Router();
 
 router.post('/register', async function (req, res) {
-    console.log('Headers:', req.headers);
-    console.log('Request body:', req.body);
+  /*  console.log('Headers:', req.headers); 
+    console.log('Request body:', req.body); */
     try{
         const { firstName, lastName, email, password } = req.body;
         
         // hashage du mot de passe 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const user = new User({ 
+        const new_user = new User({ 
             firstName, 
             lastName, 
             email, 
             password: hashedPassword 
         });
-        await user.save();
+        await new_user.save();
         
         res.status(201).json({ message: 'Utilisateur créé avec succès' });
     }
