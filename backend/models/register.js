@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+const mongoose = require ('mongoose');
 
-const userSchema = new mongoose.Schema({
+const userSchema = mongoose.Schema({
   firstName: {
     type: String,
     required: true
@@ -22,7 +22,8 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
-const user = mongoose.model('RegisterUser', userSchema);
+const RegisterUser = mongoose.models.RegisterUser || mongoose.model('RegisterUser', userSchema);
 
-module.exports = user;
+module.exports = RegisterUser;
+
 

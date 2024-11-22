@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
 
+const mongoose = require ('mongoose')
 const userSchema = new mongoose.Schema({
  
   email: {
@@ -12,8 +12,11 @@ const userSchema = new mongoose.Schema({
     required: true
   }
 }, {
+  collection : 'registerusers',
   timestamps: true
 });
 
 
-export default mongoose.models.LoginUser || mongoose.model('LoginUser', userSchema);
+const LoginUser = mongoose.models.LoginUser || mongoose.model('LoginUser', userSchema);
+
+module.exports = LoginUser;
