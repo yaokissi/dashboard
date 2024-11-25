@@ -8,12 +8,12 @@ router.post('/login', async function (req, res) {
   try {
     const { email, password } = req.body;
 
-    console.log("Email reçu :", email);
+    console.log("Email :", email);
 
     // Vérification de l'utilisateur dans la base de données
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: 'Utilisateur non trouvé' });
+      return res.status(401).json({ message: 'can'/'t find user' });
     }
 
     console.log("Utilisateur trouvé :", user);
