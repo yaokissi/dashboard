@@ -5,7 +5,7 @@ const bcrypt = require ('bcrypt')
 const router = express.Router();
 
 router.post('/register', async function (req, res) {
-  /*  console.log('Headers:', req.headers); 
+  /*console.log('Headers:', req.headers); 
     console.log('Request body:', req.body); */
     try{
         const { firstName, lastName, email, password } = req.body;

@@ -1,19 +1,41 @@
-<script setup>
-import { onMounted } from 'vue';
-import MainContent from '../components/MainContent.vue'
+<script>
+import {defineComponent, onMounted, ref} from 'vue';
+import {useRouter} from 'vue-router';
+import MainContent from '../components/MainContent.vue';
 
-/* */
-onMounted(() => {
-  fetch('https://replay.sportsdata.io/api/v3/nba/stats/json/boxscore/20767?key=827c29db402f4861a7ebdf5f0f443a62')
-  .then((response) => response.json())
-  .then((data) => {
-    console.log(data);
-  })
-})
+
+export default defineComponent({
+  components: {
+    MainContent,
+  },
+
+  setup() {
+    const router = useRouter();
+    const userName = ref('')
+
+    onMounted(() => {
+      const token = localStorage.getItem('token');
+      const firstName = localStorage.getItem('firstName');
+
+      if (!token) {
+        alert('Vous devez être connecté pour accéder à cette page.');
+        router.push('/login');
+      } else if (firstName) {
+        userName.value = firstName;
+      }
+    });
+
+    return {
+      userName,
+    };
+  },
+});
 </script>
 
 <template>
- <MainContent></MainContent>
+  <div>
+    <MainContent :userName="userName"/>
+  </div>
 </template>
 
 <style>

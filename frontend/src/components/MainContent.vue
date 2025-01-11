@@ -1,18 +1,65 @@
 <script>
-import NextDaysProgramCard from './NextDaysProgramCard.vue'
+import NextDaysProgramCard from './NextDaysProgramCard.vue';
+import { logout } from "../../services/api.js";
+import { getCompetitions } from "../../services/apiFootball.js";
+import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue';
+
 export default {
   components: {
-    NextDaysProgramCard
-  }
+    NextDaysProgramCard,
+  },
+  props: {
+    userName: {
+      type: String,
+      required: true,
+    },
+  },
+  setup() {
+    const router = useRouter();
+    const competitions = ref([]); // Pour stocker les données des compétitions
+    const nextMatches = ref([]);
+
+    const fetchCompetitions = async () => {
+      console.log("Appel de la fonction fetchCompetitions");
+      try {
+        const data = await getCompetitions(); // Récupère les données de l'API
+        console.log("Réponse de l'API :", data);
+        competitions.value = data; // Met à jour la valeur
+      } catch (error) {
+        console.error("Erreur lors de la récupération des compétitions :", error);
+      }
+    };
+
+
+
+    const handleLogout = () => {
+      logout();
+      router.push('/login');
+    };
+
+    onMounted(() => {
+      console.log('Composant monté, appel de fetchCompetitions');
+      fetchCompetitions();
+
+    });
+
+    return {
+      handleLogout,
+      competitions,
+
+    };
+  },
 };
 </script>
+
 
 <template>
     <body>
         <header>
         <h1>Dash<span class="text-blue-600">board</span></h1>
         <h2 class="text-base text-gray-500 font-bold mt-10 uppercase">Main Categories</h2>
-        <div class="sports--categories mt-2 w-25 flex justify-evenly"> 
+        <div class="sports--categories mt-2 w-25 flex justify-evenly">
             <article>
                 <i class="fi fi-br-football" style="color: white; font-size: 30px;" ></i>
                 <p class="text-sm">Football</p>
@@ -22,7 +69,7 @@ export default {
                 <p class="text-sm">Basketball</p>
             </article>
         </div>
-        <div class="sports--categories mt-2 w-25 flex justify-evenly"> 
+        <div class="sports--categories mt-2 w-25 flex justify-evenly">
             <article>
                 <i class="fi fi-br-tennis" style=" color: white; font-size: 30px;" ></i>
                 <p class="text-sm">Tennis</p>
@@ -34,15 +81,29 @@ export default {
         </div>
         <div class="football--leagues mt-10">
             <h2 class="text-base text-gray-500 mb-2 font-bold uppercase">Leagues</h2>
-            <article>
-               <img src="https://upload.wikimedia.org/wikipedia/commons/f/fb/Ligue1_logo.png" width="30" alt="ligue 1 logo" title="ligue 1 logo"> 
-               <p class="font-bold">Ligue 1</p>
-            </article>
+
+          <!-- competitions -->
+          <article v-for="competition in competitions" :key="competition.id" class="flex items-center mb-4">
+            <img
+                :src="competition.emblem || 'https://via.placeholder.com/30'"
+                alt="Emblème de la ligue"
+                width="30"
+                class="mr-3"
+            />
+            <p class="font-bold">{{ competition.name }}</p>
+          </article>
+
         </div>
     </header>
-   
+
     <div class="main">
         <section class="league--image-container">
+          <div class="profil--details pt-5 flex justify-between w-90">
+            <h2 class="text-white p-5"> Hello {{ userName }}</h2>
+            <button title="Se déconnecter" @click="handleLogout" class=" cursor-pointer p-5 mr-5 rounded-full border-none text-white ">
+              <i class="fi fi-br-power cursor-pointer rounded-full" style="color: red; font-size: 20px;" ></i>
+            </button>
+          </div>
           <h2 class=" slogan text-6xl font-bold text-neutral-50">Le meilleur <br> de l'actualité sport</h2>
         </section>
         <section class="league--games-container">
@@ -63,13 +124,14 @@ export default {
                 <p  class="text-center mt-5">Parc des princes</p>
             </article>
         </section>
-      
+
         <div class="league--next-day-games--container">
+          <!-- c'est ici que je veux utiliser mon composant NextDaysProgramCard -->
             <NextDaysProgramCard></NextDaysProgramCard>
         </div>
     </div>
     </body>
-    
+
 </template>
 
 <style lang="scss" scoped>
@@ -91,7 +153,7 @@ h1 {
   font-style: italic;
 }
 .sports--categories article{
-    padding: 30px;   
+    padding: 30px;
     display: block;
     text-align: center;
     background-color: #0e0e13;
@@ -104,12 +166,16 @@ h1 {
     color: white;
 }
 }
+.football--leagues {
+  overflow: auto;
 
+  height: 50vh;
+}
 .football--leagues article{
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    width: 50%;
+
+    width: 100%;
+  font-size: 15px;
+
 }
 .main {
     background-color: #191920;
@@ -117,7 +183,7 @@ h1 {
     width: 80%;
 }
 .slogan {
-   padding-top: 150px;
+  padding-top: 50px;
    padding-left: 50px;
    background: #B7DEED;
 background: linear-gradient(to right, #B7DEED 0%, #71CEEF 25%, #21B4E2 75%, #B7DEED 100%);
@@ -147,7 +213,7 @@ background: linear-gradient(to right, #B7DEED 0%, #71CEEF 25%, #21B4E2 75%, #B7D
     margin-left: 25px;
     width: 25%;
     border-radius: 25px;
-    
+
     .teams {
         display: flex;
         justify-content: space-evenly;
@@ -155,7 +221,7 @@ background: linear-gradient(to right, #B7DEED 0%, #71CEEF 25%, #21B4E2 75%, #B7D
     }
 }
 .league--next-day-games--container{
-  
+
 }
 
 </style>

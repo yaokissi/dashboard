@@ -1,36 +1,43 @@
 const express = require('express');
 const User = require("../models/login.js");
 const bcrypt = require('bcrypt');
-
+const jwt = require('jsonwebtoken');
 const router = express.Router();
+const authenticate = require('../middlewares/auth');
 
 router.post('/login', async function (req, res) {
   try {
     const { email, password } = req.body;
-
     console.log("Email :", email);
 
-    // Vérification de l'utilisateur dans la base de données
+    // user verification in database
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: 'can'/'t find user' });
+      return res.status(401).json({ message: "can't find user" });
     }
+    console.log("user found :", user);
 
-    console.log("Utilisateur trouvé :", user);
-
-    // Vérification du mot de passe
+    // password verification
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    console.log("Validation du mot de passe :", isPasswordValid);
+    console.log("password validation :", isPasswordValid);
 
     if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Mot de passe incorrect' });
+      return res.status(401).json({ message: 'incorrect password' });
     }
+// generate a JWT token
+  const token = jwt.sign(
+  { userId: user._id, email: user.email },
+  'JWT_SECRET', // secret key
+  { expiresIn: '24h' } // token is expired after 1 hour
+);
+    // if all is ok
+    res.status(200).json({token,firstName: user.firstName, });
 
-    // Si tout est valide
-    res.status(200).json({ message: 'Connexion réussie', Prénom: user.firstName });
+    console.log("you now logged :", token, user.firstName);
+
   } catch (err) {
-    console.error("Erreur lors de la connexion :", err.message);
-    res.status(500).json({ message: 'Erreur interne du serveur', error: err.message });
+    console.error("error during the login :", err.message);
+    res.status(500).json({ message: 'Server Error', error: err.message });
   }
 });
 

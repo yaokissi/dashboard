@@ -1,22 +1,11 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-
+import { useRouter } from 'vue-router';
 </script>
 
 <template>
-  <header>
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-        <RouterLink to= "/contact">contact</RouterLink>
-      </nav>
-  </header>
   <RouterView/>
 </template>
 
 <style scoped>
-header{
-  display: none;
-}
-
+ 
 </style>
